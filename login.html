@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Login - Logbook</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 50px;
+    }
+
+    .login-container {
+      max-width: 400px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #007BFF;
+    }
+
+    input, button {
+      padding: 12px;
+      width: 100%;
+      margin: 10px 0;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-container">
+    <h2>Login to Logbook</h2>
+    <input type="text" id="studentName" placeholder="Student Name" required />
+    <input type="text" id="regNumber" placeholder="Registration Number" required />
+    <button onclick="login()">Login</button>
+  </div>
+
+  <script>
+    function login() {
+      const name = document.getElementById('studentName').value.trim();
+      const reg = document.getElementById('regNumber').value.trim();
+
+      if (!name || !reg) {
+        alert("Please enter both name and registration number.");
+        return;
+      }
+
+      localStorage.setItem("currentStudent", JSON.stringify({ name, reg }));
+      window.location.href = "logbook.html"; // next page
+    }
+  </script>
+
+</body>
+</html>

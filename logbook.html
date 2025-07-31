@@ -2,145 +2,129 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Logbook - ASUMUKI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Industrial Training Logbook</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f4f4;
-      margin: 0;
       padding: 20px;
     }
-
-    .container {
-      max-width: 800px;
-      margin: auto;
-      background: white;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    input, textarea, button {
+      margin: 10px 0;
+      padding: 8px;
+      width: 100%;
+      max-width: 500px;
+      display: block;
     }
-
-    h1 {
-      color: #007BFF;
-      text-align: center;
-    }
-
     table {
       width: 100%;
+      max-width: 800px;
+      margin-top: 20px;
       border-collapse: collapse;
-      margin-top: 20px;
+      background: white;
     }
-
     th, td {
+      padding: 10px;
       border: 1px solid #ccc;
-      padding: 10px;
       text-align: left;
-    }
-
-    th {
-      background-color: #007BFF;
-      color: white;
-    }
-
-    tr:nth-child(even) {
-      background-color: #f9f9f9;
-    }
-
-    input, button {
-      padding: 10px;
-      margin: 5px 0;
-      width: 100%;
-      box-sizing: border-box;
-    }
-
-    button {
-      background-color: #007BFF;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    .back {
-      margin-top: 20px;
-      display: inline-block;
-      background-color: #007BFF;
-      color: white;
-      padding: 10px 20px;
-      border-radius: 5px;
-      text-decoration: none;
-    }
-
-    .back:hover {
-      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
+  <h2>Industrial Training Logbook</h2>
 
-  <div class="container">
-    <h1>Industrial Training Logbook</h1>
+  <input type="text" id="regNumber" placeholder="Enter your Registration Number" />
+  <input type="text" id="industrialName" placeholder="Enter Industrial Name" />
 
-    <input type="date" id="dateInput" />
-    <input type="text" id="taskInput" placeholder="Enter task for the day" />
-    <button onclick="addTask()">Add Task</button>
+  <input type="date" id="taskDate" />
+  <textarea id="taskDescription" placeholder="Enter task done on selected date"></textarea>
+  <button onclick="saveTask()">Save Task</button>
 
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Task</th>
-        </tr>
-      </thead>
-      <tbody id="logbookBody">
-        <!-- Tasks will show here -->
-      </tbody>
-    </table>
+  <table>
+    <thead>
+      <tr><th>Date</th><th>Task</th></tr>
+    </thead>
+    <tbody id="logbookBody"></tbody>
+  </table>
 
-    <a href="index.html" class="back">← Back to Home</a>
-  </div>
+  <button onclick="downloadPDF()">Download Weekly Report as PDF</button>
 
   <script>
-    // Load tasks from local storage
-    window.onload = function () {
-      const savedTasks = JSON.parse(localStorage.getItem("logbookTasks")) || [];
-      savedTasks.forEach(task => addRow(task.date, task.task));
-    };
+    function saveTask() {
+      const reg = document.getElementById("regNumber").value.trim();
+      const name = document.getElementById("industrialName").value.trim();
+      const date = document.getElementById("taskDate").value;
+      const task = document.getElementById("taskDescription").value.trim();
 
-    function addTask() {
-      const date = document.getElementById("dateInput").value;
-      const task = document.getElementById("taskInput").value;
-
-      if (date === "" || task === "") {
-        alert("Please fill in both fields.");
+      if (!reg || !name || !date || !task) {
+        alert("Please fill all fields.");
         return;
       }
 
-      addRow(date, task);
-      saveTask(date, task);
-
-      document.getElementById("dateInput").value = "";
-      document.getElementById("taskInput").value = "";
-    }
-
-    function addRow(date, task) {
-      const table = document.getElementById("logbookBody");
-      const row = document.createElement("tr");
-      row.innerHTML = `<td>${date}</td><td>${task}</td>`;
-      table.appendChild(row);
-    }
-
-    function saveTask(date, task) {
-      const saved = JSON.parse(localStorage.getItem("logbookTasks")) || [];
+      const key = `${reg}_${name}`;
+      const saved = JSON.parse(localStorage.getItem(key)) || [];
       saved.push({ date, task });
-      localStorage.setItem("logbookTasks", JSON.stringify(saved));
+      localStorage.setItem(key, JSON.stringify(saved));
+
+      document.getElementById("taskDate").value = "";
+      document.getElementById("taskDescription").value = "";
+
+      loadTasks();
+    }
+
+    function loadTasks() {
+      const reg = document.getElementById("regNumber").value.trim();
+      const name = document.getElementById("industrialName").value.trim();
+      const key = `${reg}_${name}`;
+      const savedTasks = JSON.parse(localStorage.getItem(key)) || [];
+
+      const tbody = document.getElementById("logbookBody");
+      tbody.innerHTML = "";
+
+      savedTasks.forEach(entry => {
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${entry.date}</td><td>${entry.task}</td>`;
+        tbody.appendChild(row);
+      });
+    }
+
+    document.getElementById("regNumber").addEventListener("input", loadTasks);
+    document.getElementById("industrialName").addEventListener("input", loadTasks);
+
+    async function downloadPDF() {
+      const { jsPDF } = window.jspdf;
+      const doc = new jsPDF();
+
+      const reg = document.getElementById("regNumber").value.trim();
+      const name = document.getElementById("industrialName").value.trim();
+      const key = `${reg}_${name}`;
+      const savedTasks = JSON.parse(localStorage.getItem(key)) || [];
+
+      if (!reg || !name || savedTasks.length === 0) {
+        alert("Please enter registration number, industrial name and make sure there is data.");
+        return;
+      }
+
+      doc.setFontSize(14);
+      doc.text("Industrial Training Weekly Report", 20, 20);
+      doc.setFontSize(11);
+      doc.text(`Reg No: ${reg}`, 20, 30);
+      doc.text(`Industry: ${name}`, 20, 37);
+
+      let y = 50;
+      savedTasks.forEach((entry, index) => {
+        doc.text(`${index + 1}. ${entry.date}: ${entry.task}`, 20, y);
+        y += 10;
+        if (y > 270) {
+          doc.addPage();
+          y = 20;
+        }
+      });
+
+      doc.save(`Logbook_Report_${reg}.pdf`);
     }
   </script>
-
 </body>
 </html>

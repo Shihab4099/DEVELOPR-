@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Welcome - ASUMUK DEVELOPER</title>
+
+  <style>
+    :root {
+      --bg-color: white;
+      --text-color: black;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      transition: all 0.3s ease;
+      padding: 0;
+    }
+
+    .dark-mode {
+      --bg-color: #121212;
+      --text-color: #f5f5f5;
+    }
+
+    .navbar {
+      background-color: #007BFF;
+      padding: 15px;
+      text-align: center;
+    }
+
+    .navbar a {
+      color: white;
+      text-decoration: none;
+      margin: 0 10px;
+      font-weight: bold;
+    }
+
+    .content {
+      padding: 20px;
+      text-align: center;
+    }
+
+    .toggle-btn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .toggle-btn:hover {
+      background-color: #0056b3;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 15px;
+      background-color: #f1f1f1;
+      margin-top: 30px;
+    }
+
+    .footer a {
+      text-decoration: none;
+      color: #007BFF;
+    }
+
+  </style>
+</head>
+<body>
+
+  <div class="navbar">
+    <a href="index.html">Home</a>
+    <a href="logbook.html">Logbook</a>
+    <a href="about.html">About</a>
+    <a href="contact.html">Contact</a>
+  </div>
+
+  <div class="content">
+    <h1>Welcome to ASUMUKI ENGINEER</h1>
+    <p>This is my personal website to showcase my learning and work in web development.</p>
+    <button class="toggle-btn" onclick="toggleMode()">Switch Theme</button>
+  </div>
+
+  <div class="footer">
+    &copy; 2025 ASUMUKI | <a href="https://github.com/shihab4099">GitHub Profile</a>
+  </div>
+
+  <script>
+    function toggleMode() {
+      document.body.classList.toggle("dark-mode");
+    }
+  </script>
+</body>
+</html>

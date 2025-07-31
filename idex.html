@@ -2,104 +2,98 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Logbook Login</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Login - Industrial Training Logbook</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #007bff, #00bcd4);
-      margin: 0;
-      padding: 0;
-      height: 100vh;
+      background: #f0f8ff;
       display: flex;
-      align-items: center;
       justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-
     .login-box {
-      background: #fff;
+      background: white;
       padding: 30px;
       border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      box-shadow: 0 0 15px rgba(0,0,0,0.2);
       width: 90%;
       max-width: 400px;
-      text-align: center;
     }
-
     h2 {
-      margin-bottom: 20px;
+      text-align: center;
       color: #007bff;
     }
-
     input {
       width: 100%;
       padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #ccc;
+      margin: 12px 0;
       border-radius: 6px;
+      border: 1px solid #ccc;
       font-size: 16px;
+      box-sizing: border-box;
     }
-
     button {
       width: 100%;
       padding: 12px;
       background: #007bff;
-      color: white;
       border: none;
       border-radius: 6px;
+      color: white;
       font-size: 16px;
       cursor: pointer;
-      transition: 0.3s;
+      transition: background 0.3s ease;
     }
-
     button:hover {
       background: #0056b3;
     }
-
     .error {
       color: red;
       font-size: 14px;
-      margin-top: -5px;
+      margin-top: -8px;
       margin-bottom: 10px;
+      display: none;
     }
   </style>
 </head>
 <body>
   <div class="login-box">
-    <h2>Logbook Login</h2>
+    <h2>Login to Logbook</h2>
     <input type="text" id="regNumber" placeholder="Registration Number" />
-    <div id="regError" class="error"></div>
-
-    <input type="text" id="industryName" placeholder="Industrial Name" />
-    <div id="nameError" class="error"></div>
-
+    <div id="regError" class="error">Please enter your Registration Number.</div>
+    <input type="text" id="industrialName" placeholder="Industrial Name" />
+    <div id="nameError" class="error">Please enter Industrial Name.</div>
     <button onclick="login()">Login</button>
   </div>
 
   <script>
     function login() {
       const reg = document.getElementById("regNumber").value.trim();
-      const name = document.getElementById("industryName").value.trim();
+      const name = document.getElementById("industrialName").value.trim();
       let valid = true;
 
       if (!reg) {
-        document.getElementById("regError").innerText = "Please enter your registration number.";
+        document.getElementById("regError").style.display = "block";
         valid = false;
       } else {
-        document.getElementById("regError").innerText = "";
+        document.getElementById("regError").style.display = "none";
       }
 
       if (!name) {
-        document.getElementById("nameError").innerText = "Please enter the industrial name.";
+        document.getElementById("nameError").style.display = "block";
         valid = false;
       } else {
-        document.getElementById("nameError").innerText = "";
+        document.getElementById("nameError").style.display = "none";
       }
 
       if (!valid) return;
 
-      localStorage.setItem("currentUser", JSON.stringify({ reg, name }));
+      localStorage.setItem("loggedIn", "true");
+      localStorage.setItem("regNumber", reg);
+      localStorage.setItem("industrialName", name);
+
       window.location.href = "logbook.html";
     }
   </script>
